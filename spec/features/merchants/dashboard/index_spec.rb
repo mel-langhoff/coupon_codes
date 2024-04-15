@@ -129,8 +129,12 @@ RSpec.describe "Merchant Dashboard" do
     it "Displays the number of transactions" do
       visit merchant_dashboard_index_path(@merchant1)
 
-      within "#merchant-#{@customer1.id}" do
-        expect(page).to have_content("Number of Transactions: 7")
+      within "#customer-#{@customer1.id}" do
+        expect(page).to have_content("Number of Transactions: 21")
+      end
+
+      within "#customer-#{@customer2.id}" do
+        expect(page).to have_content("Number of Transactions: 12")
       end
     end
   end

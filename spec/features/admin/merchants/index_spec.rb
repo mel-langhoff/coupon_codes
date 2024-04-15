@@ -113,14 +113,14 @@ RSpec.describe "Admin Merchants Index" do
       create_list(:invoice_item, 2, unit_price: 9000, quantity: 1, invoice: @invoice7, item: @item7)
       create_list(:invoice_item, 5, unit_price: 9000, quantity: 1, invoice: @invoice8, item: @item8)
 
-      create(:transaction, result: 1, invoice: @invoice1)
-      create(:transaction, result: 1, invoice: @invoice2)
-      create(:transaction, result: 0, invoice: @invoice3)
-      create(:transaction, result: 1, invoice: @invoice4)
-      create(:transaction, result: 1, invoice: @invoice5)
-      create(:transaction, result: 1, invoice: @invoice6)
-      create(:transaction, result: 1, invoice: @invoice7)
-      create(:transaction, result: 1, invoice: @invoice8)
+      create(:transaction, result: 0, invoice: @invoice1)
+      create(:transaction, result: 0, invoice: @invoice2)
+      create(:transaction, result: 1, invoice: @invoice3)
+      create(:transaction, result: 0, invoice: @invoice4)
+      create(:transaction, result: 0, invoice: @invoice5)
+      create(:transaction, result: 0, invoice: @invoice6)
+      create(:transaction, result: 0, invoice: @invoice7)
+      create(:transaction, result: 0, invoice: @invoice8)
 
       visit admin_merchants_path
     end
