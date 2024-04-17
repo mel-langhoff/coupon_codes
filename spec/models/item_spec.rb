@@ -70,13 +70,9 @@ RSpec.describe Item, type: :model do
     @invoice_item6 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice4.id, status: 1)
   end
 
-  describe "class methods" do
-
-  end
-
   describe "instance methods" do
-    describe ".format_date" do
-      it "formats date day, month, year" do
+    describe ".format_inv_date" do
+      it "formats the invoice date" do
         expect(@item1.format_inv_date(@invoice4.id)).to eq("Monday, September 13, 2004")
       end
     end
@@ -111,17 +107,7 @@ RSpec.describe Item, type: :model do
       end
     end
 
-    describe ".format_invoice_date" do
-      it "formats date day, month, year" do
-        item1 = create(:item)
-        invoice1 = create(:invoice, created_at: Time.utc(2004, 9, 13, 12, 0, 0))
-        invoice_item1 = create(:invoice_item, invoice_id: invoice1.id, item_id: item1.id, quantity: 10, unit_price: 10, status: 1)
-        
-        expect(item1.format_invoice_date(invoice1)).to eq("Monday, September 13, 2004")
-      end
-    end
-
-    describe ".top_selling_date" do
+    describe ".top_selling_day" do
       it "shows the top selling formatted date for an item" do
         merchant = Merchant.create(name: "Amazon")
 
@@ -131,22 +117,18 @@ RSpec.describe Item, type: :model do
         item1 = Item.create(name: "Item 1", description: "Description 1", unit_price: 10, merchant: merchant)
         item2 = Item.create(name: "Item 2", description: "Description 2", unit_price: 20, merchant: merchant)
 
-        # for item 1
         invoice1 = Invoice.create(status: 1, customer: customer1, created_at: Time.utc(2024, 4, 5, 12, 0, 0))
         invoice_item1 = InvoiceItem.create(invoice: invoice1, item: item1, quantity: 5, unit_price: 10, status: 1)
         transaction1 = Transaction.create(credit_card_number: "1234567890123456", result: 0, invoice: invoice1)
 
-        # top selling date inv for item 1
         invoice2 = Invoice.create(status: 1, customer: customer2, created_at: Time.utc(2024, 4, 6, 12, 0, 0))
         invoice_item2 = InvoiceItem.create(invoice: invoice2, item: item1, quantity: 8, unit_price: 10, status: 1)
         transaction2 = Transaction.create(credit_card_number: "9876543210987654", result: 0, invoice: invoice2)
 
-        # for item 2
         invoice3 = Invoice.create(status: 1, customer: customer1, created_at: Time.utc(2024, 4, 7, 12, 0, 0))
         invoice_item3 = InvoiceItem.create(invoice: invoice3, item: item2, quantity: 10, unit_price: 20, status: 1)
         transaction3 = Transaction.create(credit_card_number: "1234567890123456", result: 0, invoice: invoice3)
 
-        # top selling date inv for item 2
         invoice4 = Invoice.create(status: 1, customer: customer2, created_at: Time.utc(2024, 4, 8, 12, 0, 0))
         invoice_item4 = InvoiceItem.create(invoice: invoice4, item: item2, quantity: 12, unit_price: 20, status: 1)
         transaction4 = Transaction.create(credit_card_number: "9876543210987654", result: 0, invoice: invoice4)
