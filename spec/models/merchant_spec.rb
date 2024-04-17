@@ -9,6 +9,10 @@ RSpec.describe Merchant, type: :model do
     it { should have_many(:customers) }
   end
 
+  describe "validations" do
+    it { should validate_presence_of :name}
+  end
+
   before(:each) do
     @merchant1 = create(:merchant)
     @merchant2 = create(:merchant, name: "Amazon")
@@ -126,7 +130,7 @@ RSpec.describe Merchant, type: :model do
       create(:transaction, result: 1, invoice: invoice7)
       create(:transaction, result: 1, invoice: invoice8)
     
-      expect(Merchant.top_five_merchants).to match_array([ merchant6, merchant5,  merchant7, merchant1,  merchant2])
+      expect(Merchant.top_five_merchants).to match_array([ merchant6, merchant5, merchant7, merchant1, merchant2])
       
       expect(Merchant.top_five_merchants[0].total_revenue).to eq 300000
       expect(Merchant.top_five_merchants[1].total_revenue).to eq 80000
@@ -144,16 +148,26 @@ RSpec.describe Merchant, type: :model do
     end
   
     describe ".top_5_customers" do
-      it "Returns the Top 5 Customers" do
+      it "returns the Top 5 Customers" do
         expect(@merchant1.top_5_customers).to match_array([@customer1, @customer2, @customer3, @customer4, @customer5])
       end
     end
 
     describe ".packaged_items" do
-      it "list merchants packaged items" do
-        expected = [@item4, @item5]
+      it "lists that merchants packaged items" do
+        merch1 = create(:merchant, name: "Amazon")
+        item1 = create(:item, merchant:  merch1)
+        item2 = create(:item, merchant:  merch1)
+        item3 = create(:item, merchant:  merch1)
+        cust1 = create(:customer)
+        inv1 = create(:invoice, customer_id: cust1.id)
+        inv_item1 = create(:invoice_item, item_id: item1.id, invoice_id: inv1.id, status: 1, unit_price: 10, quantity: 10)
+        inv_item2 = create(:invoice_item, item_id: item2.id, invoice_id: inv1.id, status: 0, unit_price: 10, quantity: 10)
+        inv_item3 = create(:invoice_item, item_id: item3.id, invoice_id: inv1.id, status: 1, unit_price: 10, quantity: 10)
+        
+        expected = [item1, item3]
 
-        expect(@merchant1.packaged_items.uniq).to eq(expected)
+        expect(merch1.packaged_items).to match_array(expected)
       end
     end
   end
