@@ -90,7 +90,7 @@ RSpec.describe Invoice, type: :model do
 
     describe '#best_day' do
       it 'returns a string that displays that merchants best selling day' do
-        expect(Invoice.best_day.strftime("%m/%d/%y")).to eq("09/13/04")
+        expect(@merchant1.invoices.best_day.strftime("%m/%d/%y")).to eq("09/13/04")
       end
     end
   end
