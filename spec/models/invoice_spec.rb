@@ -1,13 +1,17 @@
 require "rails_helper"
 
 RSpec.describe Invoice, type: :model do
-
   describe "relationships" do
     it { should belong_to(:customer) }
     it { should have_many(:transactions) }
     it { should have_many(:invoice_items) }
     it { should have_many(:items) }
     it { should have_many(:merchants) }
+  end
+
+  describe "validations" do
+    it { should validate_presence_of :status }
+    it { should validate_presence_of :customer_id }
   end
 
   before(:each) do
@@ -18,7 +22,6 @@ RSpec.describe Invoice, type: :model do
     @customer4 = @customers[3]
     @customer5 = @customers[4]
     @customer6 = @customers[5]
-
 
     @invoice1 = create(:invoice, customer: @customer1, created_at:  Time.utc(2004, 9, 13, 12, 0, 0) )
     @invoices = create_list(:invoice, 2, customer: @customer1)
@@ -76,7 +79,6 @@ RSpec.describe Invoice, type: :model do
     @invoice_item13 = create(:invoice_item, item_id: @item8.id, invoice_id: @invoice6.id, status: 1)
     @invoice_item14 = create(:invoice_item, item_id: @item9.id, invoice_id: @invoice7.id, status: 1)
     @invoice_item15 = create(:invoice_item, item_id: @item10.id, invoice_id: @invoice8.id, status: 1)
-
   end
 
   describe "class methods" do
@@ -132,7 +134,6 @@ RSpec.describe Invoice, type: :model do
 
     describe '#best_day' do
       it 'returns a string that displays that merchants best selling day' do
-        
         merchant1 = create(:merchant)
  
         customer1 = Customer.create!(first_name:"Billy", last_name:"W" )
@@ -150,7 +151,6 @@ RSpec.describe Invoice, type: :model do
         invoice_item1 = create(:invoice_item, item_id: @item1.id, invoice_id: @invoice1.id, status: 0)
         invoice_item1 = create(:invoice_item, item_id: @item2.id, invoice_id: @invoice2.id, status: 0)
 
-  
         create_list(:invoice_item, 5, unit_price: 1000, quantity: 5, invoice: invoice1, item: item1)
         create_list(:invoice_item, 1, unit_price: 2000, quantity: 3, invoice: invoice1, item: item1)
         create_list(:invoice_item, 9, unit_price: 1200, quantity: 2, invoice: invoice2, item: item2)

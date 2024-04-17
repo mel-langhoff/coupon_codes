@@ -5,6 +5,9 @@ class Invoice < ApplicationRecord
   has_many :items, through: :invoice_items
   has_many :merchants, through: :items
 
+  validates :status, presence: true
+  validates :customer_id, presence: true
+
   enum status: { "in progress" => 0, 
                  "completed" => 1, 
                  "cancelled" => 2 }
@@ -14,19 +17,19 @@ class Invoice < ApplicationRecord
   end
 
   def self.incomplete_invoices
-    select("invoices.*")
-      .joins(:invoice_items)
-      .where("invoice_items.status != 2")
-      .distinct
-      .order(:created_at)
+    self.select("invoices.*")
+        .joins(:invoice_items)
+        .where("invoice_items.status != 2")
+        .distinct
+        .order(:created_at)
   end
 
   def self.best_day
     self.joins(:invoice_items)
-    .select("SUM(invoice_items.unit_price * invoice_items.quantity) AS revenue, invoices.created_at")
-    .group(:id)
-    .order("revenue DESC")
-    .first
+        .select("SUM(invoice_items.unit_price * invoice_items.quantity) AS revenue, invoices.created_at")
+        .group(:id)
+        .order("revenue DESC")
+        .first
   end
 
   def total_revenue
