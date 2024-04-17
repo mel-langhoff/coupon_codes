@@ -9,6 +9,11 @@ RSpec.describe Customer, type: :model do
     it { should have_many(:merchants) }
   end
 
+  describe "validations" do
+    it { should validate_presence_of :first_name}
+    it { should validate_presence_of :last_name}
+  end
+
   before(:each) do
     @customers = create_list(:customer, 10)
     @customer1 = @customers[0]
@@ -48,10 +53,12 @@ RSpec.describe Customer, type: :model do
   end
 
   describe "class methods" do
-    it "#top_customers" do
-      top_customers = Customer.top_customers
+    describe "#top_customers" do
+      it "displays the top customers based on total spend" do
+        top_customers = Customer.top_customers
 
-      expect(top_customers).to contain_exactly(@customer1, @customer2, @customer3, @customer4, @customer5)
+        expect(top_customers).to contain_exactly(@customer1, @customer2, @customer3, @customer4, @customer5)
+      end
     end
   end
 
