@@ -7,16 +7,4 @@ RSpec.describe Transaction, type: :model do
     it { should have_many(:items) }
     it { should have_many(:merchants) }
   end
-
-  before(:each) do
-
-  end
-
-  describe "class methods" do
-
-  end
-
-  describe "instance methods" do
-    
-  end
 end
