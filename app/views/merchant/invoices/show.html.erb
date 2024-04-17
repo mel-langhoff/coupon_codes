@@ -11,7 +11,6 @@
     <p>Item Name: <%= invoice_item.item.name %></p>
     <p>Quantity: <%= invoice_item.quantity %></p>
     <p>Total Price: <%= invoice_item.unit_price %></p>
-    <p>Status: <%= invoice_item.status %></p>
 
     <%= form_with url: merchant_invoice_item_path(params[:merchant_id], invoice_item.id), method: :patch, data: { turbo: false } do |f| %>
       <%= f.label :status, "Status" %>

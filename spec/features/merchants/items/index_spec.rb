@@ -210,11 +210,11 @@ RSpec.describe "Merchant Items Index" do
         visit merchant_items_path(@merchant1)
   
         within "#top-5-items" do
-          expect(page).to have_content("Total Item Revenue: #{@item1.total_revenue}")
-          expect(page).to have_content("Total Item Revenue: #{@item2.total_revenue}")
-          expect(page).to have_content("Total Item Revenue: #{@item3.total_revenue}")
-          expect(page).to have_content("Total Item Revenue: #{@item4.total_revenue}")
-          expect(page).to have_content("Total Item Revenue: #{@item5.total_revenue}")
+          expect(page).to have_content("Total Item Revenue: #{number_to_currency(@item1.total_revenue/100.00)}")
+          expect(page).to have_content("Total Item Revenue: #{number_to_currency(@item2.total_revenue/100.00)}")
+          expect(page).to have_content("Total Item Revenue: #{number_to_currency(@item3.total_revenue/100.00)}")
+          expect(page).to have_content("Total Item Revenue: #{number_to_currency(@item4.total_revenue/100.00)}")
+          expect(page).to have_content("Total Item Revenue: #{number_to_currency(@item5.total_revenue/100.00)}")
         end
       end
     end
