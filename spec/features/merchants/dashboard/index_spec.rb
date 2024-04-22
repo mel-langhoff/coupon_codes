@@ -13,15 +13,18 @@ RSpec.describe "Merchant Dashboard Index" do
     @customer5 = @customers[4]
     @customer6 = @customers[5]
 
-    @invoices = create_list(:invoice, 3, customer: @customer1)
+    @coupon1 = create(:coupon, merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent")
+    @coupon2 = create(:coupon, merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollar")
+
+    @invoices = create_list(:invoice, 3, customer: @customer1, coupon: @coupon1)
     @invoice1 = @invoices[0]
     @invoice2 = @invoices[1]
     @invoice3 = @invoices[2]
-    @invoice4 = create(:invoice, customer_id: @customer2.id, created_at: Time.utc(2004, 9, 13, 12, 0, 0))
-    @invoice5 = create(:invoice, customer_id: @customer3.id, created_at: Time.utc(2006, 1, 12, 1, 0, 0))
-    @invoice6 = create(:invoice, customer_id: @customer4.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0))
-    @invoice7 = create(:invoice, customer_id: @customer5.id, created_at: Time.utc(2024, 4, 6, 12, 0, 0))
-    @invoice8 = create(:invoice, customer_id: @customer6.id, created_at: Time.utc(2024, 4, 7, 12, 0, 0))
+    @invoice4 = create(:invoice, customer_id: @customer2.id, created_at: Time.utc(2004, 9, 13, 12, 0, 0), coupon: @coupon1)
+    @invoice5 = create(:invoice, customer_id: @customer3.id, created_at: Time.utc(2006, 1, 12, 1, 0, 0), coupon: @coupon2)
+    @invoice6 = create(:invoice, customer_id: @customer4.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0), coupon: @coupon2)
+    @invoice7 = create(:invoice, customer_id: @customer5.id, created_at: Time.utc(2024, 4, 6, 12, 0, 0), coupon: @coupon2)
+    @invoice8 = create(:invoice, customer_id: @customer6.id, created_at: Time.utc(2024, 4, 7, 12, 0, 0), coupon: @coupon2)
 
     @invoice1_transactions = create_list(:transaction, 5, invoice: @invoice1)
     @transaction1 = @invoice1_transactions[0]
@@ -81,6 +84,16 @@ RSpec.describe "Merchant Dashboard Index" do
     @invoice_item15 = create(:invoice_item, item_id: @item10.id, invoice_id: @invoice8.id, status: 1)
   
     visit merchant_dashboard_index_path(@merchant1)
+  end
+
+  describe 'Coupon User Story 1' do
+    it 'has a link to the merchant coupons index page' do
+      expect(page).to have_link('Merchant Coupons')
+
+      click_on 'Merchant Coupons'
+
+      expect(current_path).to eq(merchant_coupons_path(@merchant1))
+    end
   end
 
   describe '#User Story 1' do
