@@ -102,7 +102,6 @@ RSpec.describe 'Merchant Coupons Index Page' do
   describe 'Coupon User Story 6' do
     it 'lists all inactive coupons together' do
       within "#inactive-coupons" do
-      save_and_open_page
         expect(page).to have_content(@coupon1.name)
         expect(page).to have_content(@coupon2.name)
         expect(page).to_not have_content(@coupon3.name)
