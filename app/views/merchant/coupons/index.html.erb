@@ -1,13 +1,29 @@
 <h1>Merchant Coupons Index Page</h1>
 
-<ol>
-  <% @coupons.each do |coupon| %>
-    <li>
-      <div id="<%= coupon.id %>-details">
-        <p><%= coupon.name %>:</p>
-        <p>Amount off: <%= coupon.value_off %> <%= coupon.value_type %></p>
-        <p><%= link_to 'View Coupon Details', merchant_coupon_path(@merchant, coupon) %></p>
-      </div>
-    </li>
-  <% end %>
-</ol>
+<div id="active-coupons">
+<h2>Active Coupons</h2>
+  <ol>
+    <% @active_coupons.each do |coupon| %>
+      <li>
+        <div id="<%= coupon.id %>-details">
+          <p><%= coupon.name %>:</p>
+          <p>Amount off: <%= coupon.value_off %> <%= coupon.value_type %></p>
+          <p><%= link_to 'View Coupon Details', merchant_coupon_path(@merchant, coupon) %></p>
+        </div>
+      </li>
+    <% end %>
+  </ol>
+</div>
+
+<div id="inactive-coupons">
+<h2>Inctive Coupons</h2>
+  <ol>
+    <% @inactive_coupons.each do |coupon| %>
+      <li>
+          <p><%= coupon.name %>:</p>
+          <p>Amount off: <%= coupon.value_off %> <%= coupon.value_type %></p>
+          <p><%= link_to 'View Coupon Details', merchant_coupon_path(@merchant, coupon) %></p>
+      </li>
+    <% end %>
+  </ol>
+</div>

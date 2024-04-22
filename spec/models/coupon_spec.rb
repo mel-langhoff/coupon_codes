@@ -18,15 +18,20 @@ RSpec.describe Coupon, type: :model do
     @customer5 = @customers[4]
     @customer6 = @customers[5]
 
-    @invoices = create_list(:invoice, 3, customer: @customer1)
+    @coupon1 = create(:coupon, merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", id: 1, active: false)
+    @coupon2 = create(:coupon, merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars", id: 2, active: false)
+    @coupon3 = create(:coupon, merchant: @merchant1, code: "DISCOUNT20", value_off: 20, value_type: "percent", id: 3, active: true)
+    @coupon4 = create(:coupon, merchant: @merchant1, code: "SAVE40", value_off: 40, value_type: "dollars", id: 4, active: true)
+
+    @invoices = create_list(:invoice, 3, customer: @customer1, coupon: @coupon1)
     @invoice1 = @invoices[0]
     @invoice2 = @invoices[1]
     @invoice3 = @invoices[2]
-    @invoice4 = create(:invoice, customer_id: @customer2.id, created_at: Time.utc(2004, 9, 13, 12, 0, 0))
-    @invoice5 = create(:invoice, customer_id: @customer3.id, created_at: Time.utc(2006, 1, 12, 1, 0, 0))
-    @invoice6 = create(:invoice, customer_id: @customer4.id)
-    @invoice7 = create(:invoice, customer_id: @customer5.id)
-    @invoice8 = create(:invoice, customer_id: @customer6.id)
+    @invoice4 = create(:invoice, customer_id: @customer2.id, created_at: Time.utc(2004, 9, 13, 12, 0, 0), coupon: @coupon1)
+    @invoice5 = create(:invoice, customer_id: @customer3.id, created_at: Time.utc(2006, 1, 12, 1, 0, 0), coupon: @coupon2)
+    @invoice6 = create(:invoice, customer_id: @customer4.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0), coupon: @coupon2)
+    @invoice7 = create(:invoice, customer_id: @customer5.id, created_at: Time.utc(2024, 4, 6, 12, 0, 0), coupon: @coupon2)
+    @invoice8 = create(:invoice, customer_id: @customer6.id, created_at: Time.utc(2024, 4, 7, 12, 0, 0), coupon: @coupon2)
 
     @invoice1_transactions = create_list(:transaction, 5, invoice: @invoice1)
     @transaction1 = @invoice1_transactions[0]
@@ -58,23 +63,39 @@ RSpec.describe Coupon, type: :model do
     @transaction18 = create(:transaction, invoice_id: @invoice6.id)
     @transaction19 = create(:transaction, invoice_id: @invoice7.id)
 
-    @item1 = create(:item, unit_price: 1, merchant_id: @merchant1.id)
-    @item2 = create(:item, unit_price: 23, merchant_id: @merchant1.id)
-    @item3 = create(:item, unit_price: 100, merchant_id: @merchant1.id)
-    @item4 = create(:item, unit_price: 5, merchant_id: @merchant1.id)
-    @item5 = create(:item, unit_price: 12, merchant_id: @merchant1.id)
+    @item1 = create(:item, unit_price: 1, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 1, 12, 0, 0))
+    @item2 = create(:item, unit_price: 23, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 2, 12, 0, 0))
+    @item3 = create(:item, unit_price: 100, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 3, 12, 0, 0))
+    @item4 = create(:item, unit_price: 5, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 4, 12, 0, 0))
+    @item5 = create(:item, unit_price: 12, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0))
+    @item6 = create(:item, unit_price: 12, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0))
+    @item7 = create(:item, unit_price: 12, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0))
+    @item8 = create(:item, unit_price: 12, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0))
+    @item9 = create(:item, unit_price: 12, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0))
+    @item10 = create(:item, unit_price: 12, merchant_id: @merchant1.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0))
 
-    @invoice_item1 = create(:invoice_item, item_id: @item1.id, invoice_id: @invoice1.id, status: 0, unit_price: 10, quantity: 10)
-    @invoice_item2 = create(:invoice_item, item_id: @item2.id, invoice_id: @invoice1.id, status: 2, unit_price: 11, quantity: 10)
-    @invoice_item3 = create(:invoice_item, item_id: @item3.id, invoice_id: @invoice2.id, status: 2, unit_price: 12, quantity: 10)
-    @invoice_item4 = create(:invoice_item, item_id: @item4.id, invoice_id: @invoice4.id, status: 1, unit_price: 13, quantity: 10)
-    @invoice_item5 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice4.id, status: 1, unit_price: 14, quantity: 10)
-    @invoice_item6 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice4.id, status: 1, unit_price: 15, quantity: 10)
-    @invoice_item7 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice5.id, status: 1, unit_price: 16, quantity: 10)
-    @invoice_item8 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice5.id, status: 2, unit_price: 17, quantity: 10)
-    @invoice_item9 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice6.id, status: 2, unit_price: 18, quantity: 10)
-    @invoice_item10 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice7.id, status: 2, unit_price: 19, quantity: 10)
+    @invoice_item1 = create(:invoice_item, item_id: @item1.id, invoice_id: @invoice1.id, status: 0)
+    @invoice_item2 = create(:invoice_item, item_id: @item2.id, invoice_id: @invoice1.id, status: 2)
+    @invoice_item3 = create(:invoice_item, item_id: @item3.id, invoice_id: @invoice2.id, status: 2)
+    @invoice_item4 = create(:invoice_item, item_id: @item4.id, invoice_id: @invoice4.id, status: 1)
+    @invoice_item5 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice4.id, status: 1)
+    @invoice_item6 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice4.id, status: 1)
+    @invoice_item7 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice5.id, status: 1)
+    @invoice_item8 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice5.id, status: 1)
+    @invoice_item9 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice6.id, status: 1)
+    @invoice_item10 = create(:invoice_item, item_id: @item5.id, invoice_id: @invoice7.id, status: 1)
+    @invoice_item11 = create(:invoice_item, item_id: @item6.id, invoice_id: @invoice4.id, status: 1)
+    @invoice_item12 = create(:invoice_item, item_id: @item7.id, invoice_id: @invoice5.id, status: 1)
+    @invoice_item13 = create(:invoice_item, item_id: @item8.id, invoice_id: @invoice6.id, status: 1)
+    @invoice_item14 = create(:invoice_item, item_id: @item9.id, invoice_id: @invoice7.id, status: 1)
+    @invoice_item15 = create(:invoice_item, item_id: @item10.id, invoice_id: @invoice8.id, status: 1)
   end
 
+  it "#active_coupons" do
+    expect(Coupon.active_coupons).to eq([@coupon3, @coupon4])
+  end
 
+  it "#inactive_coupons" do
+  expect(Coupon.inactive_coupons).to eq([@coupon1, @coupon2])
+  end
 end

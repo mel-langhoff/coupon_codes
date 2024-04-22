@@ -2,5 +2,11 @@ class Coupon < ApplicationRecord
   belongs_to :merchant
   has_many :invoices
 
-  # enum value_type: { percent: 0, dollars: 1 }
+  def self.active_coupons
+    where(active: true)
+  end
+
+  def self.inactive_coupons
+    where(active: false)
+  end
 end

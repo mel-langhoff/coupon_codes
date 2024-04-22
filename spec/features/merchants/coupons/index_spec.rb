@@ -13,10 +13,10 @@ RSpec.describe 'Merchant Coupons Index Page' do
     @customer5 = @customers[4]
     @customer6 = @customers[5]
 
-    @coupon1 = create(:coupon, merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", id: 1)
-    @coupon2 = create(:coupon, merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars", id: 2)
-    @coupon3 = create(:coupon, merchant: @merchant1, code: "DISCOUNT20", value_off: 20, value_type: "percent", id: 3)
-    @coupon4 = create(:coupon, merchant: @merchant1, code: "SAVE40", value_off: 40, value_type: "dollars", id: 4)
+    @coupon1 = create(:coupon, name: "Coupon1", merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", id: 1, active: false)
+    @coupon2 = create(:coupon, name: "Coupon2", merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars", id: 2, active: false)
+    @coupon3 = create(:coupon, name: "Coupon3", merchant: @merchant1, code: "DISCOUNT20", value_off: 20, value_type: "percent", id: 3, active: true)
+    @coupon4 = create(:coupon, name: "Coupon4", merchant: @merchant1, code: "SAVE40", value_off: 40, value_type: "dollars", id: 4, active: true)
 
     @invoices = create_list(:invoice, 3, customer: @customer1, coupon: @coupon1)
     @invoice1 = @invoices[0]
@@ -84,26 +84,38 @@ RSpec.describe 'Merchant Coupons Index Page' do
     @invoice_item13 = create(:invoice_item, item_id: @item8.id, invoice_id: @invoice6.id, status: 1)
     @invoice_item14 = create(:invoice_item, item_id: @item9.id, invoice_id: @invoice7.id, status: 1)
     @invoice_item15 = create(:invoice_item, item_id: @item10.id, invoice_id: @invoice8.id, status: 1)
+  
+    visit merchant_coupons_path(@merchant1)
+
   end
 
   describe 'Coupon User Story 1' do
     it 'has a coupons details' do
-      visit merchant_coupons_path(@merchant1)
+      within "##{@coupon4.id}-details" do
+        expect(page).to have_content(@coupon4.name)
+        expect(page).to have_content("Amount off: 40 dollars")
+        expect(page).to have_link('View Coupon Details', href: merchant_coupon_path(@merchant1, @coupon4))
+      end
+    end
+  end
 
-      within "##{@coupon1.id}-details" do
+  describe 'Coupon User Story 6' do
+    it 'lists all inactive coupons together' do
+      within "#inactive-coupons" do
         expect(page).to have_content(@coupon1.name)
-        expect(page).to have_content("Amount off: 10 percent")
-        expect(page).to have_link('View Coupon Details', href: merchant_coupon_path(@merchant1, @coupon1))
+        expect(page).to have_content(@coupon2.name)
+        expect(page).to_not have_content(@coupon3.name)
+        expect(page).to_not have_content(@coupon4.name)
       end
     end
 
-    it 'has all coupons listed' do
-      visit merchant_coupons_path(@merchant1)
-
-      expect(page).to have_content(@coupon1.name)
-      expect(page).to have_content(@coupon2.name)
-      expect(page).to have_content(@coupon3.name)
-      expect(page).to have_content(@coupon4.name)
+    it 'lists all active coupons together' do
+      within "#active-coupons" do
+        expect(page).to have_content(@coupon3.name)
+        expect(page).to have_content(@coupon4.name)
+        expect(page).to_not have_content(@coupon1.name)
+        expect(page).to_not have_content(@coupon2.name)
+      end
     end
   end
 end
