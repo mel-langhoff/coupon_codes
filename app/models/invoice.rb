@@ -4,6 +4,7 @@ class Invoice < ApplicationRecord
   has_many :invoice_items
   has_many :items, through: :invoice_items
   has_many :merchants, through: :items
+  belongs_to :coupon, optional: true
 
   enum status: { "in progress" => 0, 
                  "completed" => 1, 

@@ -1,10 +1,7 @@
-# Little Esty Shop
+# Little Esty Shop Coupon Codes
 
 ## Contributors
-- Billy - [LinkedIn](https://www.linkedin.com/in/wallacebilly1/) || [GitHub](https://github.com/wallacebilly1)
-- Lance - [LinkedIn](https://www.linkedin.com/in/lance-butler-jr-18b9442a1/) || [GitHub](https://github.com/LJ9332)
 - Mel - [LinkedIn](https://www.linkedin.com/in/melissalanghoff/) || [GitHub](https://github.com/mel-langhoff)
-- Rodrigo - [LinkedIn](https://www.linkedin.com/in/rodrigo-chavez1/) || [GitHub](https://github.com/RodrigoACG)
 
 ## Background
 "Little Esty Shop" is a group project that required us to build a fictitious e-commerce platform where merchants and admins can manage inventory and fulfill customer invoices.
