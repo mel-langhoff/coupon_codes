@@ -110,6 +110,7 @@ RSpec.describe Coupon, type: :model do
 
   it "#usage_count" do
     expect(@coupon5.usage_count).to eq 3
+    expect(@coupon1.usage_count).to eq 5 # count is greater than 5
     expect(@coupon4.usage_count).to eq 1
     expect(@coupon2.usage_count).to eq 0 # coupon2 has no successful transactions
   end

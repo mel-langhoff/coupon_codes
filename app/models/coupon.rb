@@ -11,6 +11,9 @@ class Coupon < ApplicationRecord
   end
 
   def usage_count
-    invoices.joins(:transactions).where(transactions: { result: 0 }).count
+    invoices.joins(:transactions)
+            .where(transactions: { result: 0 })
+            .limit(5)
+            .count
   end
 end
