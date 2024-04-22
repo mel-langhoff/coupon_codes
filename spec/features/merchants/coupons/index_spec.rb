@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Merchant Dashboard Index" do
+RSpec.describe 'Merchant Coupons Index Page' do
   before(:each) do
     @merchant1 = create(:merchant)
     @merchant2 = create(:merchant, name: "Amazon")
@@ -13,8 +13,10 @@ RSpec.describe "Merchant Dashboard Index" do
     @customer5 = @customers[4]
     @customer6 = @customers[5]
 
-    @coupon1 = create(:coupon, merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent")
-    @coupon2 = create(:coupon, merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars")
+    @coupon1 = create(:coupon, merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", id: 1)
+    @coupon2 = create(:coupon, merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars", id: 2)
+    @coupon3 = create(:coupon, merchant: @merchant1, code: "DISCOUNT20", value_off: 20, value_type: "percent", id: 3)
+    @coupon4 = create(:coupon, merchant: @merchant1, code: "SAVE40", value_off: 40, value_type: "dollars", id: 4)
 
     @invoices = create_list(:invoice, 3, customer: @customer1, coupon: @coupon1)
     @invoice1 = @invoices[0]
@@ -82,119 +84,26 @@ RSpec.describe "Merchant Dashboard Index" do
     @invoice_item13 = create(:invoice_item, item_id: @item8.id, invoice_id: @invoice6.id, status: 1)
     @invoice_item14 = create(:invoice_item, item_id: @item9.id, invoice_id: @invoice7.id, status: 1)
     @invoice_item15 = create(:invoice_item, item_id: @item10.id, invoice_id: @invoice8.id, status: 1)
-  
-    visit merchant_dashboard_index_path(@merchant1)
   end
 
   describe 'Coupon User Story 1' do
-    it 'has a link to the merchant coupons index page' do
-      expect(page).to have_link('Merchant Coupons')
+    it 'has a coupons details' do
+      visit merchant_coupons_path(@merchant1)
 
-      click_on 'Merchant Coupons'
-
-      expect(current_path).to eq(merchant_coupons_path(@merchant1))
-    end
-  end
-
-  describe '#User Story 1' do
-    it 'displays the merchants name' do
-      expect(page).to have_content(@merchant1.name)
-    end
-  end
-
-  describe '#User Story 2' do
-    it 'displays links for merchant invoices and merchant items' do
-      expect(page).to have_link("Merchant Items")
-      
-      expect(page).to have_link("Merchant Invoices")
-    end
-
-    it 'when I click on those links it takes me to the respective pages' do
-      click_on "Merchant Items"
-      expect(current_path).to eq(merchant_items_path(@merchant1))
-
-      visit merchant_dashboard_index_path(@merchant1)
-      
-      click_on "Merchant Invoices"
-      expect(current_path).to eq(merchant_invoices_path(@merchant1))
-    end
-  end
-
-  describe '#User Story 3' do
-    it 'displays the Merchants Top 5 Customer names, ordered by successful transactions' do
-      within "#top-5-customers" do
-        expect(page).to have_content(@customer1.name)
-        expect(page).to have_content(@customer2.name)
-        expect(page).to have_content(@customer3.name)
-        expect(page).to have_content(@customer4.name)
-        expect(page).to have_content(@customer5.name)
-
-        expect(page).to_not have_content(@customer6.name)
-
-        expect(@customer1.name).to appear_before(@customer2.name)
-        expect(@customer2.name).to appear_before(@customer3.name)
-        expect(@customer3.name).to appear_before(@customer4.name)
-        expect(@customer4.name).to appear_before(@customer5.name)
+      within "##{@coupon1.id}-details" do
+        expect(page).to have_content(@coupon1.name)
+        expect(page).to have_content("Amount off: 10 percent")
+        expect(page).to have_link('View Coupon Details', href: merchant_coupon_path(@merchant1, @coupon1))
       end
     end
 
-    it 'displays the number of succesful transactions next to each name' do
-      within "#merchant-#{@customer1.id}" do
-        expect(page).to have_content("Number of Transactions: 21")
-      end
+    it 'has all coupons listed' do
+      visit merchant_coupons_path(@merchant1)
 
-      within "#merchant-#{@customer4.id}" do
-        expect(page).to have_content("Number of Transactions: 6")
-      end
-    end
-  end
-
-  describe '#User Story 4' do
-    it 'displays a section for items ready to ship with item names' do
-      within "#items-ready-to-ship" do
-        expect(page).to have_content(@item4.name)
-        expect(page).to have_content(@item5.name)
-
-        expect(page).to_not have_content(@item1.name)
-        expect(page).to_not have_content(@item2.name)
-        expect(page).to_not have_content(@item3.name)
-      end
-    end
-
-    it 'each invoice has a link to its show page' do
-      within "#items-ready-to-ship" do
-        expect(page).to have_content(@item4.name)
-        within "#item-#{@item4.id}" do
-          expect(page).to have_link("#{@invoice4.id}")
-          click_on "#{@invoice4.id}"
-          expect(current_path).to eq(merchant_invoice_path(@merchant1, @invoice4))
-        end
-      end
-    end
-  end
-
-  describe '#User story 5' do
-    it 'displays the formatted creation date of the invoice next to each items name' do
-
-      within "#items-ready-to-ship" do
-        expect(page).to have_content("Invoice Created On Monday, September 13, 2004")
-        expect(page).to have_content("Invoice Created On Thursday, January 12, 2006")
-        expect(page).to have_content("Invoice Created On Friday, April 05, 2024")
-        expect(page).to have_content("Invoice Created On Saturday, April 06, 2024")
-        expect(page).to have_content("Invoice Created On Saturday, April 06, 2024")
-      end
-    end
-
-    it 'lists items from oldest to newest by invoice creation date' do
-      within "#items-ready-to-ship" do
-        expect(@item6.name).to appear_before(@item7.name)
-        expect(@item7.name).to appear_before(@item8.name)
-        expect(@item8.name).to appear_before(@item9.name)
-        expect(@item9.name).to appear_before(@item10.name)
-        expect(@item10.name).to_not appear_before(@item8.name)
-        expect(@item9.name).to_not appear_before(@item6.name)
-        expect(@item8.name).to_not appear_before(@item6.name)
-      end
+      expect(page).to have_content(@coupon1.name)
+      expect(page).to have_content(@coupon2.name)
+      expect(page).to have_content(@coupon3.name)
+      expect(page).to have_content(@coupon4.name)
     end
   end
 end

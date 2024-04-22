@@ -1,1 +1,13 @@
 <h1>Merchant Coupons Index Page</h1>
+
+<ol>
+  <% @coupons.each do |coupon| %>
+    <li>
+      <div id="<%= coupon.id %>-details">
+        <p><%= coupon.name %>:</p>
+        <p>Amount off: <%= coupon.value_off %> <%= coupon.value_type %></p>
+        <p><%= link_to 'View Coupon Details', merchant_coupon_path(@merchant, coupon) %></p>
+      </div>
+    </li>
+  <% end %>
+</ol>
