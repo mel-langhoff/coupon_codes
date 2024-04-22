@@ -9,4 +9,8 @@ class Coupon < ApplicationRecord
   def self.inactive_coupons
     where(active: false)
   end
+
+  def usage_count
+    invoices.joins(:transactions).where(transactions: { result: 0 }).count
+  end
 end
