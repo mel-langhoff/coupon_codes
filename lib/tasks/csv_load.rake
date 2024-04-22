@@ -61,6 +61,16 @@ namespace :csv_load do
     puts "InvoiceItems seeded successfully"
   end
 
+  desc "seed coupons csv data"
+  task :coupons => :environment do
+    file_path = "db/data/coupons.csv"
+    CSV.foreach(file_path, headers: true, header_converters: :symbol) do |row|
+      Coupon.create!(row.to_hash)
+    end
+    ActiveRecord::Base.connection.reset_pk_sequence!('coupons')
+    puts "Coupons seeded successfully"
+  end
+
   desc "destroy all database data"
   task :destroy_all => :environment do
     Transaction.destroy_all
@@ -69,6 +79,7 @@ namespace :csv_load do
     Customer.destroy_all
     Merchant.destroy_all
     Item.destroy_all
+    Coupon.destroy_all
     puts "All Databases have been destroyed"
   end
 
@@ -81,5 +92,6 @@ namespace :csv_load do
     Rake::Task["csv_load:invoices"].invoke
     Rake::Task["csv_load:transactions"].invoke
     Rake::Task["csv_load:invoice_items"].invoke
+    Rake::Task["csv_load:coupons"].invoke
   end
 end
