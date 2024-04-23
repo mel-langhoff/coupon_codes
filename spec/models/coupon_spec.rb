@@ -31,7 +31,7 @@ RSpec.describe Coupon, type: :model do
     @invoice4 = create(:invoice, customer_id: @customer2.id, created_at: Time.utc(2004, 9, 13, 12, 0, 0), coupon: @coupon1)
     @invoice5 = create(:invoice, customer_id: @customer3.id, created_at: Time.utc(2006, 1, 12, 1, 0, 0), coupon: @coupon2)
     @invoice6 = create(:invoice, customer_id: @customer4.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0), coupon: @coupon3)
-    @invoice7 = create(:invoice, customer_id: @customer5.id, created_at: Time.utc(2024, 4, 6, 12, 0, 0), coupon: @coupon4)
+    @invoice7 = create(:invoice, customer_id: @customer5.id, created_at: Time.utc(2024, 4, 6, 12, 0, 0), coupon: @coupon4, status: "in progress")
     @invoice8 = create(:invoice, customer_id: @customer6.id, created_at: Time.utc(2024, 4, 7, 12, 0, 0), coupon: @coupon5)
 
     @invoice8_transactions = create_list(:transaction, 3, invoice: @invoice8, result: 0)
@@ -113,5 +113,9 @@ RSpec.describe Coupon, type: :model do
     expect(@coupon1.usage_count).to eq 5 # count is greater than 5
     expect(@coupon4.usage_count).to eq 1
     expect(@coupon2.usage_count).to eq 0 # coupon2 has no successful transactions
+  end
+
+  it "#pending_invoices?" do
+    expect(@coupon4.pending_invoices?).to be true #uses inv7, which has "in progress" status
   end
 end

@@ -16,4 +16,8 @@ class Coupon < ApplicationRecord
             .limit(5)
             .count
   end
+
+  def pending_invoices?
+    invoices.where(status: "in progress").present?
+  end
 end
