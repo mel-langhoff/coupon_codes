@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "Merchant Dashboard Index" do
+RSpec.describe 'Merchant Coupons Index Page' do
   before(:each) do
     @merchant1 = create(:merchant)
     @merchant2 = create(:merchant, name: "Amazon")
@@ -13,17 +13,19 @@ RSpec.describe "Merchant Dashboard Index" do
     @customer5 = @customers[4]
     @customer6 = @customers[5]
 
-    @coupon1 = create(:coupon, merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent")
-    @coupon2 = create(:coupon, merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars")
+    @coupon1 = create(:coupon, name: "Coupon1", merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", id: 1, active: false)
+    @coupon2 = create(:coupon, name: "Coupon2", merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars", id: 2, active: false)
+    @coupon3 = create(:coupon, name: "Coupon3", merchant: @merchant1, code: "DISCOUNT20", value_off: 20, value_type: "percent", id: 3, active: true)
+    @coupon4 = create(:coupon, name: "Coupon4", merchant: @merchant1, code: "SAVE40", value_off: 40, value_type: "dollars", id: 4, active: true)
 
     @invoices = create_list(:invoice, 3, customer: @customer1, coupon: @coupon1)
     @invoice1 = @invoices[0]
     @invoice2 = @invoices[1]
     @invoice3 = @invoices[2]
     @invoice4 = create(:invoice, customer_id: @customer2.id, created_at: Time.utc(2004, 9, 13, 12, 0, 0), coupon: @coupon1)
-    @invoice5 = create(:invoice, customer_id: @customer3.id, created_at: Time.utc(2006, 1, 12, 1, 0, 0), coupon: @coupon2)
+    @invoice5 = create(:invoice, customer_id: @customer3.id, created_at: Time.utc(2006, 1, 12, 1, 0, 0), coupon: @coupon3, status: 0)
     @invoice6 = create(:invoice, customer_id: @customer4.id, created_at: Time.utc(2024, 4, 5, 12, 0, 0), coupon: @coupon2)
-    @invoice7 = create(:invoice, customer_id: @customer5.id, created_at: Time.utc(2024, 4, 6, 12, 0, 0), coupon: @coupon2)
+    @invoice7 = create(:invoice, customer_id: @customer5.id, created_at: Time.utc(2024, 4, 6, 12, 0, 0), coupon: @coupon4, status: 1)
     @invoice8 = create(:invoice, customer_id: @customer6.id, created_at: Time.utc(2024, 4, 7, 12, 0, 0), coupon: @coupon2)
 
     @invoice1_transactions = create_list(:transaction, 5, invoice: @invoice1)
@@ -39,7 +41,7 @@ RSpec.describe "Merchant Dashboard Index" do
     @transaction8 = @invoice4_transactions[2]
     @transaction9 = @invoice4_transactions[3]
 
-    @invoice5_transactions = create_list(:transaction, 3, invoice: @invoice5)
+    @invoice5_transactions = create_list(:transaction, 3, invoice: @invoice5, result: 0)
     @transaction10 = @invoice5_transactions[0]
     @transaction11 = @invoice5_transactions[1]
     @transaction12 = @invoice4_transactions[2]
@@ -83,118 +85,47 @@ RSpec.describe "Merchant Dashboard Index" do
     @invoice_item14 = create(:invoice_item, item_id: @item9.id, invoice_id: @invoice7.id, status: 1)
     @invoice_item15 = create(:invoice_item, item_id: @item10.id, invoice_id: @invoice8.id, status: 1)
   
-    visit merchant_dashboard_index_path(@merchant1)
+    visit merchant_coupon_path(@merchant1, @coupon3)
   end
 
-  describe 'Coupon User Story 1' do
-    it 'has a link to the merchant coupons index page' do
-      expect(page).to have_link('Merchant Coupons')
+  describe 'Coupon User story 3'
+  it 'disdplays a coupons attributes and usage count' do
+    expect(page).to have_content("Coupon Name: Coupon3")
+    expect(page).to have_content("Coupon Value Off: 20 percent")
+    expect(page).to have_content("Coupon Status: Active")
+    expect(page).to have_content("Usage Count: 3")
 
-      click_on 'Merchant Coupons'
-
-      expect(current_path).to eq(merchant_coupons_path(@merchant1))
-    end
+    visit merchant_coupon_path(@merchant1, @coupon1)
+    expect(page).to have_content("Coupon Name: Coupon1")
+    expect(page).to have_content("Coupon Value Off: 10 percent")
+    expect(page).to have_content("Coupon Status: Inactive")
   end
 
-  describe '#User Story 1' do
-    it 'displays the merchants name' do
-      expect(page).to have_content(@merchant1.name)
-    end
-  end
-
-  describe '#User Story 2' do
-    it 'displays links for merchant invoices and merchant items' do
-      expect(page).to have_link("Merchant Items")
-      
-      expect(page).to have_link("Merchant Invoices")
+  describe 'Coupon User Story 4' do
+    it 'has a button to change the coupon to inactive' do
+      expect(page).to have_button('Deactivate')
     end
 
-    it 'when I click on those links it takes me to the respective pages' do
-      click_on "Merchant Items"
-      expect(current_path).to eq(merchant_items_path(@merchant1))
+    it 'cannot change a coupon to inactive if there are pending invoices' do
+      expect(page).to have_content("Coupon Status: Active")
+      expect(page).to have_button('Deactivate')
 
-      visit merchant_dashboard_index_path(@merchant1)
-      
-      click_on "Merchant Invoices"
-      expect(current_path).to eq(merchant_invoices_path(@merchant1))
-    end
-  end
+      click_on 'Deactivate'
 
-  describe '#User Story 3' do
-    it 'displays the Merchants Top 5 Customer names, ordered by successful transactions' do
-      within "#top-5-customers" do
-        expect(page).to have_content(@customer1.name)
-        expect(page).to have_content(@customer2.name)
-        expect(page).to have_content(@customer3.name)
-        expect(page).to have_content(@customer4.name)
-        expect(page).to have_content(@customer5.name)
-
-        expect(page).to_not have_content(@customer6.name)
-
-        expect(@customer1.name).to appear_before(@customer2.name)
-        expect(@customer2.name).to appear_before(@customer3.name)
-        expect(@customer3.name).to appear_before(@customer4.name)
-        expect(@customer4.name).to appear_before(@customer5.name)
-      end
+      expect(current_path).to eq merchant_coupon_path(@merchant1, @coupon3)
+      expect(page).to have_content("Error. Can't change coupon to inactive if there are pending invoices.")
     end
 
-    it 'displays the number of succesful transactions next to each name' do
-      within "#merchant-#{@customer1.id}" do
-        expect(page).to have_content("Number of Transactions: 21")
-      end
+    it 'can change a coupon to inactive' do
+      visit merchant_coupon_path(@merchant1, @coupon4)
 
-      within "#merchant-#{@customer4.id}" do
-        expect(page).to have_content("Number of Transactions: 6")
-      end
-    end
-  end
+      expect(page).to have_content("Coupon Status: Active")
+      expect(page).to have_button('Deactivate')
 
-  describe '#User Story 4' do
-    it 'displays a section for items ready to ship with item names' do
-      within "#items-ready-to-ship" do
-        expect(page).to have_content(@item4.name)
-        expect(page).to have_content(@item5.name)
+      click_on 'Deactivate'
 
-        expect(page).to_not have_content(@item1.name)
-        expect(page).to_not have_content(@item2.name)
-        expect(page).to_not have_content(@item3.name)
-      end
-    end
-
-    it 'each invoice has a link to its show page' do
-      within "#items-ready-to-ship" do
-        expect(page).to have_content(@item4.name)
-        within "#item-#{@item4.id}" do
-          expect(page).to have_link("#{@invoice4.id}")
-          click_on "#{@invoice4.id}"
-          expect(current_path).to eq(merchant_invoice_path(@merchant1, @invoice4))
-        end
-      end
-    end
-  end
-
-  describe '#User story 5' do
-    it 'displays the formatted creation date of the invoice next to each items name' do
-
-      within "#items-ready-to-ship" do
-        expect(page).to have_content("Invoice Created On Monday, September 13, 2004")
-        expect(page).to have_content("Invoice Created On Thursday, January 12, 2006")
-        expect(page).to have_content("Invoice Created On Friday, April 05, 2024")
-        expect(page).to have_content("Invoice Created On Saturday, April 06, 2024")
-        expect(page).to have_content("Invoice Created On Saturday, April 06, 2024")
-      end
-    end
-
-    it 'lists items from oldest to newest by invoice creation date' do
-      within "#items-ready-to-ship" do
-        expect(@item6.name).to appear_before(@item7.name)
-        expect(@item7.name).to appear_before(@item8.name)
-        expect(@item8.name).to appear_before(@item9.name)
-        expect(@item9.name).to appear_before(@item10.name)
-        expect(@item10.name).to_not appear_before(@item8.name)
-        expect(@item9.name).to_not appear_before(@item6.name)
-        expect(@item8.name).to_not appear_before(@item6.name)
-      end
+      expect(current_path).to eq merchant_coupon_path(@merchant1, @coupon4)
+      expect(page).to have_content("Coupon successfully changed to inactive")
     end
   end
 end
