@@ -44,7 +44,7 @@ class Merchant < ApplicationRecord
               .limit(5)
   end
 
-  def coupon_number_threshold
-    coupons.where(active: true).limit(5).count
+  def over_coupon_number_threshold?
+    coupons.where(active: true).count >= 5
   end
 end
