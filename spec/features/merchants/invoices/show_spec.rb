@@ -110,4 +110,15 @@ RSpec.describe "Merchant Invoices Show" do
       end
     end
   end
+
+  describe 'Coupon User Story 2' do
+    it 'has a link go to the new coupon page' do
+      expect(page).to have_link('Create New Coupon', href: new_merchant_coupon(@merchant1))
+
+      click_on 'Create New Coupon'
+
+      expect(current_path).to be new_merchant_coupon_path(@merchant1)
+      expect(page).to have_field()
+    end
+  end
 end
