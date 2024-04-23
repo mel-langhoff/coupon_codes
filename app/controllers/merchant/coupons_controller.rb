@@ -33,17 +33,26 @@ class Merchant::CouponsController < ApplicationController
 
   def new
     @merchant = Merchant.find(params[:merchant_id])
+    @coupon = @merchant.coupons.new
+    @value_types = ["percent", "dollars"]
   end
 
   def create
-    merchant = Merchant.find(params[:merchant_id])
-    coupon = Coupon.new(coupon_params)
-    if coupon.save
+    @merchant = Merchant.find(params[:merchant_id])
+    @coupons = @merchant.coupons
+    @new_coupon = @merchant.coupons.new(coupon_params)
+    # require 'pry'; binding.pry
+    # do i relook at validations?
+    # probably something with the test data FUCK
+    # idea: change merch method to coupons and iterate over the group
+    if @merchant.over_coupon_number_threshold? == false
+      @merchant.coupons << @new_coupon
       flash[:alert] = "Coupon saved successfully!"
-      redirect_to merchant_coupons_path(merchant)
+      redirect_to merchant_coupons_path(@merchant)
+
     else
-      flash[:error] = "Error: #{coupon.errors}"
-      redirect_to new_merchant_coupon_path(merchant)
+      flash[:error] = "Error: #{@new_coupon.errors}"
+      redirect_to new_merchant_coupon_path(@merchant)
     end
   end
 

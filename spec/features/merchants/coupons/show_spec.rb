@@ -13,11 +13,6 @@ RSpec.describe 'Merchant Coupons Index Page' do
     @customer5 = @customers[4]
     @customer6 = @customers[5]
 
-    @coupon1 = create(:coupon, name: "Coupon1", merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", id: 1, active: false)
-    @coupon2 = create(:coupon, name: "Coupon2", merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars", id: 2, active: false)
-    @coupon3 = create(:coupon, name: "Coupon3", merchant: @merchant1, code: "DISCOUNT20", value_off: 20, value_type: "percent", id: 3, active: true)
-    @coupon4 = create(:coupon, name: "Coupon4", merchant: @merchant1, code: "SAVE40", value_off: 40, value_type: "dollars", id: 4, active: true)
-
     @invoices = create_list(:invoice, 3, customer: @customer1, coupon: @coupon1)
     @invoice1 = @invoices[0]
     @invoice2 = @invoices[1]
@@ -85,6 +80,12 @@ RSpec.describe 'Merchant Coupons Index Page' do
     @invoice_item14 = create(:invoice_item, item_id: @item9.id, invoice_id: @invoice7.id, status: 1)
     @invoice_item15 = create(:invoice_item, item_id: @item10.id, invoice_id: @invoice8.id, status: 1)
   
+
+    @coupon1 = create(:coupon, name: "Coupon1", merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", id: 1, active: false)
+    @coupon2 = create(:coupon, name: "Coupon2", merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars", id: 2, active: false)
+    @coupon3 = create(:coupon, name: "Coupon3", merchant: @merchant1, code: "DISCOUNT20", value_off: 20, value_type: "percent", id: 3, active: true)
+    @coupon4 = create(:coupon, name: "Coupon4", merchant: @merchant1, code: "SAVE40", value_off: 40, value_type: "dollars", id: 4, active: true)
+    
     visit merchant_coupon_path(@merchant1, @coupon3)
   end
 
@@ -103,6 +104,8 @@ RSpec.describe 'Merchant Coupons Index Page' do
 
   describe 'Coupon User Stories 4 and 5' do
     it 'has a button to change the coupon to inactive' do
+      
+
       expect(page).to have_button('Deactivate')
     end
 

@@ -6,5 +6,6 @@ FactoryBot.define do
     value_off { "percent" }
     active { true }
     association :merchant
+    association :item
   end
 end

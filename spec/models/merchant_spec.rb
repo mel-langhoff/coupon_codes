@@ -153,6 +153,22 @@ RSpec.describe Merchant, type: :model do
   end
 
   describe "instance methods" do
+    it "#over_coupon_number_threshold?" do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)    
+      coupon1 = create(:coupon, merchant: merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", active: true)
+      coupon2 = create(:coupon, merchant: merchant2, code: "SAVE20", value_off: 20, value_type: "dollars", active: true)
+      coupon3 = create(:coupon, merchant: merchant2, code: "SAVE201", value_off: 20, value_type: "dollars", active: true)
+      coupon4 = create(:coupon, merchant: merchant2, code: "SAVE202", value_off: 20, value_type: "dollars", active: true)
+      coupon5 = create(:coupon, merchant: merchant2, code: "SAVE203", value_off: 20, value_type: "dollars", active: true)
+      coupon6 = create(:coupon, merchant: merchant2, code: "SAVE204", value_off: 20, value_type: "dollars", active: true)
+      coupon7 = create(:coupon, merchant: merchant2, code: "SAVE205", value_off: 20, value_type: "dollars", active: true)
+        
+      expect(merchant1.over_coupon_number_threshold?).to be false
+      expect(merchant2.over_coupon_number_threshold?).to be true
+    end
+  
+
     describe ".top_five_items" do
       it "sorts items into top five" do
         expect(@merchant1.top_five_items).to eq([@item5, @item2, @item4, @item1, @item3])

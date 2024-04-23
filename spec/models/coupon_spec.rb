@@ -6,6 +6,14 @@ RSpec.describe Coupon, type: :model do
     it { should have_many(:invoices) }
   end
 
+  describe "validations" do
+    it { should validate_presence_of :name}
+    it { should validate_presence_of :code}
+    it { should validate_presence_of :value_type}
+    it { should validate_presence_of :value_type}
+    # it { should validate_presence_of :active}
+  end
+
   before(:each) do
     @merchant1 = create(:merchant)
     @merchant2 = create(:merchant, name: "Amazon")

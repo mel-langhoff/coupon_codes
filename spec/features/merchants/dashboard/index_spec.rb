@@ -13,8 +13,8 @@ RSpec.describe "Merchant Dashboard Index" do
     @customer5 = @customers[4]
     @customer6 = @customers[5]
 
-    @coupon1 = create(:coupon, merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent")
-    @coupon2 = create(:coupon, merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars")
+    @coupon1 = create(:coupon, merchant: @merchant1, code: "DISCOUNT10", value_off: 10, value_type: "percent", active: true)
+    @coupon2 = create(:coupon, merchant: @merchant1, code: "SAVE20", value_off: 20, value_type: "dollars", active: true))
 
     @invoices = create_list(:invoice, 3, customer: @customer1, coupon: @coupon1)
     @invoice1 = @invoices[0]
@@ -82,8 +82,6 @@ RSpec.describe "Merchant Dashboard Index" do
     @invoice_item13 = create(:invoice_item, item_id: @item8.id, invoice_id: @invoice6.id, status: 1)
     @invoice_item14 = create(:invoice_item, item_id: @item9.id, invoice_id: @invoice7.id, status: 1)
     @invoice_item15 = create(:invoice_item, item_id: @item10.id, invoice_id: @invoice8.id, status: 1)
-  
-    visit merchant_dashboard_index_path(@merchant1)
   end
 
   describe 'Coupon User Story 1' do

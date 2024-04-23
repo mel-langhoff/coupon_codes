@@ -1,6 +1,6 @@
 <h1>New Merchant Coupon Page</h1>
 
-<%= form_with url: merchant_coupons_path(@merchant), method: :post, data: { turbo: false }, local: true do |f| %>
+<%= form_with model: [@merchant, @coupon], local: true do |f| %>
   <p><%= f.label :name, 'Name:' %></p>
   <p><%= f.text_field :name %></p>
 
@@ -11,7 +11,7 @@
   <p><%= f.number_field :value_off %></p>
 
   <p><%= f.label :value_type, 'Type of Coupon:' %></p>
-  <p><%= f.select :value_type, ["percent", "dollars"] %></p>
+  <p><%= f.select :value_type, options_for_select(@value_types) %></p>
 
   <p><%= f.label :active, 'Active?:' %></p>
   <p><%= f.check_box :active %></p>
