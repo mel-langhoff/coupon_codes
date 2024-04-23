@@ -81,6 +81,17 @@ RSpec.describe Merchant, type: :model do
   end
 
   describe "class methods" do
+    it "#coupon_number_threshold" do
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+
+      create_list(:coupon, 3, merchant: merchant1, active: true)
+      create_list(:coupon, 6, merchant: merchant2, active: true)
+
+      expect(merchant1.over_coupon_number_threshold?).to be false
+      expect(merchant2.over_coupon_number_threshold?).to be true
+    end
+
     it '#top_five_merchants' do
       merchant1 = create(:merchant)
       merchant2 = create(:merchant)

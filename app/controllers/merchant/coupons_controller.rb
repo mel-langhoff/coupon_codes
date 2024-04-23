@@ -42,7 +42,7 @@ class Merchant::CouponsController < ApplicationController
       flash[:alert] = "Coupon saved successfully!"
       redirect_to merchant_coupons_path(merchant)
     else
-      flash[:alert] = "Error: #{message(coupon.errors)}"
+      flash[:error] = "Error: #{coupon.errors}"
       redirect_to new_merchant_coupon_path(merchant)
     end
   end

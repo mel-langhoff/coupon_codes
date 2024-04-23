@@ -16,8 +16,8 @@ RSpec.describe "New Merchant Coupon Page" do
       it 'will provide a message and create a new coupon' do
           fill_in 'Name', with: 'Sample Coupon'
           fill_in 'Unique Code', with: 'SC12345'
-          select 'percent', from: 'Type of Coupon'
           fill_in 'Value Off Amount', with: '10'
+          select "percent", from: 'Type of Coupon'
           check 'Active?'
 
           click_on 'Create New Coupon'
@@ -67,6 +67,8 @@ RSpec.describe "New Merchant Coupon Page" do
           expect(page).to have_field('Type of Coupon')
           expect(page).to have_field('Value Off Amount')
           expect(page).to have_field('Active?')
+          expect(page).to have_content(coupon.errors)
       end
+    end
   end
 end

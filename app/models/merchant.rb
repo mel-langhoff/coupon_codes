@@ -43,4 +43,8 @@ class Merchant < ApplicationRecord
               .order(total_revenue: :desc)
               .limit(5)
   end
+
+  def coupon_number_threshold
+    coupons.where(active: true).limit(5).count
+  end
 end
