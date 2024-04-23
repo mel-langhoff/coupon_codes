@@ -32,10 +32,24 @@ class Merchant::CouponsController < ApplicationController
   end
 
   def new
-    
+    @merchant = Merchant.find(params[:merchant_id])
   end
 
   def create
+    merchant = Merchant.find(params[:merchant_id])
+    coupon = Coupon.new(coupon_params)
+    if coupon.save
+      flash[:alert] = "Coupon saved successfully!"
+      redirect_to merchant_coupons_path(merchant)
+    else
+      flash[:alert] = "Error: #{message(coupon.errors)}"
+      redirect_to new_merchant_coupon_path(merchant)
+    end
+  end
 
+  private
+
+  def coupon_params
+    params.permit(:name, :code, :active, :value_type, :value_off)
   end
 end

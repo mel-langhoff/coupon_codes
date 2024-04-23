@@ -1,2 +1,20 @@
-<h1>New Coupon Page</h1>
+<h1>New Merchant Coupon Page</h1>
 
+<%= form_with url: merchant_coupons_path(@merchant), method: :post, data: { turbo: false }, local: true do |f| %>
+  <p><%= f.label :name, 'Name:' %></p>
+  <p><%= f.text_field :name %></p>
+
+  <p><%= f.label :code, 'Unique Code:' %></p>
+  <p><%= f.text_field :code %></p>
+
+  <p><%= f.label :value_off, 'Value Off Amount:' %></p>
+  <p><%= f.number_field :value_off %></p>
+
+  <p><%= f.label :value_type, 'Type of Coupon:' %></p>
+  <p><%= f.select :value_type, ["percent", "dollars"] %></p>
+
+  <p><%= f.label :active, 'Active?:' %></p>
+  <p><%= f.check_box :active %></p>
+
+  <p><%= f.submit 'Create New Coupon' %></p>
+<% end %>
