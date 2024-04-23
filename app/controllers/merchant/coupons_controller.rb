@@ -30,4 +30,12 @@ class Merchant::CouponsController < ApplicationController
 
     redirect_to merchant_coupon_path(merchant, coupon)
   end
+
+  def new
+    
+  end
+
+  def create
+
+  end
 end
