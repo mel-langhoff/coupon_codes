@@ -41,4 +41,32 @@ class Invoice < ApplicationRecord
     formatted_dollars = cents / 100.00
     formatted_dollars
   end
+
+  # merch argu, got subtotal calc'ed by cents; subtot is calc'ed by sum of product of total_rev; returns amount in $ by divving by 100.to_f
+  def merchant_subtotal(merchant)
+    merchant_subtotal = self.items
+                          .where(merchant: merchant)
+                          .joins(:invoice_items)
+                          .sum("invoice_items.unit_price * invoice_items.quantity") # total_revenue formula
+    merchant_subtotal / 100.00
+  end
+
+  def merchant_revenue_grand_total
+    total = total_revenue
+
+    if coupon.present?
+        # disc if %
+        if coupon.value_type == 'percentage'
+            discount = total * (coupon.value_off / 100.0)
+            total -= discount
+        # disc if $
+        elsif coupon.value_type == 'dollars'
+            total -= coupon.value_off
+        end
+        # is total 0?
+        total = 0 if total < 0
+    end
+
+    total / 100.0
+      end
 end

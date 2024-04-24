@@ -11,7 +11,14 @@
   <p><%= f.number_field :value_off %></p>
 
   <p><%= f.label :value_type, 'Type of Coupon:' %></p>
-  <p><%= f.select :value_type, ["percent", "dollars"] %></p>
+  <p>
+    <%= f.radio_button :value_type, 'percent' %>
+    <%= f.label :value_type, 'Percent', value: 'percent' %>
+  </p>
+  <p>
+    <%= f.radio_button :value_type, 'dollars' %>
+    <%= f.label :value_type, 'Dollars', value: 'dollars' %>
+  </p>
 
   <p><%= f.label :active, 'Active?:' %></p>
   <p><%= f.check_box :active %></p>

@@ -86,7 +86,7 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    xdescribe '#best_day' do
+    describe '#best_day' do
       it 'returns a string that displays that merchants best selling day' do
         expect(@merchant1.invoices.best_day.strftime("%m/%d/%y")).to eq("09/13/04")
       end
@@ -94,6 +94,49 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe "instance methods" do
+    describe '#merchant_revenue_grand_total' do
+      it 'returns the merchant total revenue' do
+        merchant = Merchant.create!(name: 'Test Merchant')
+        customer = Customer.create!(first_name: 'John', last_name: 'Doe')
+        item1 = Item.create!(name: 'Item 1', description: 'Test item 1', unit_price: 1000, merchant: merchant)
+        item2 = Item.create!(name: 'Item 2', description: 'Test item 2', unit_price: 2000, merchant: merchant)
+        coupon = Coupon.create!(name: 'Test Coupon', code: 'TESTCODE', merchant: merchant, value_type: 'percentage', value_off: 20, active: true)
+        
+        invoice = Invoice.create!(status: 'completed', customer: customer, coupon: coupon)
+        InvoiceItem.create!(invoice: invoice, item: item1, quantity: 5, unit_price: item1.unit_price, status: 1)
+        InvoiceItem.create!(invoice: invoice, item: item2, quantity: 3, unit_price: item2.unit_price, status: 1)
+        
+        # subtotal
+        expected_subtotal = (item1.unit_price * 5 + item2.unit_price * 3) / 100.0
+        
+        # grand total after applying coupon discounts
+        discount = expected_subtotal * (coupon.value_off / 100.0)
+        expected_grand_total = expected_subtotal - discount
+        
+        # grand total is calculated correctly
+        grand_total = invoice.merchant_revenue_grand_total
+        
+        expect(grand_total).to eq(expected_grand_total)      
+      end
+    end
+    describe "#merchant_subtotal" do
+      it 'returns a subtotal for the merchant with coupons' do
+        customer = Customer.create(first_name: 'Joe', last_name: 'Doe')
+        merchant = Merchant.create(name: 'Merchant 1')
+
+        item1 = Item.create(name: 'Item 1', description: 'Description 1', unit_price: 2000, merchant: merchant)
+        item2 = Item.create(name: 'Item 2', description: 'Description 2', unit_price: 1000, merchant: merchant)
+
+        invoice = Invoice.create(status: 'in progress', customer: customer)
+        InvoiceItem.create(invoice: invoice, item: item1, quantity: 2, unit_price: 2000, status: "pending")
+        InvoiceItem.create(invoice: invoice, item: item2, quantity: 3, unit_price: 1000, status: "pending")
+
+        expected_subtotal = (2 * 2000 + 3 * 1000) / 100.0
+
+        expect(invoice.merchant_subtotal(merchant)).to eq(expected_subtotal)
+      end
+    end
+
     describe ".format_date" do
       it "formats date day, month, year" do
         expect(@invoice1.format_date).to eq("Monday, September 13, 2004")
