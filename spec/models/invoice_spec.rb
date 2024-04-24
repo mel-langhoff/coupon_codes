@@ -134,7 +134,27 @@ RSpec.describe Invoice, type: :model do
         expected_subtotal = (2 * 2000 + 3 * 1000) / 100.0
 
         expect(invoice.merchant_subtotal(merchant)).to eq(expected_subtotal)
-      end
+    end
+
+    it 'applies a dollar coupon and returns the correct total' do
+      customer = Customer.create(first_name: 'Joe', last_name: 'Doe')
+      merchant = Merchant.create(name: 'Merchant 1')
+  
+      item1 = Item.create(name: 'Item 1', description: 'Description 1', unit_price: 2000, merchant: merchant)
+      item2 = Item.create(name: 'Item 2', description: 'Description 2', unit_price: 1000, merchant: merchant)
+  
+      invoice = Invoice.create(status: 'in progress', customer: customer)
+      InvoiceItem.create(invoice: invoice, item: item1, quantity: 2, unit_price: 2000, status: "pending")
+      InvoiceItem.create(invoice: invoice, item: item2, quantity: 3, unit_price: 1000, status: "pending")
+  
+      total_revenue = 2 * item1.unit_price + 3 * item2.unit_price
+      expect(total_revenue).to eq(7000)
+  
+      coupon = Coupon.create(value_type: 'dollars', value_off: 1000)
+  
+      total = invoice.merchant_rev_with_coupons
+      expect(total).to eq(70.0)
+    end
       it 'applies a percent coupon' do
         customer = Customer.create(first_name: 'Joe', last_name: 'Doe')
         merchant = Merchant.create(name: 'Merchant 1')
