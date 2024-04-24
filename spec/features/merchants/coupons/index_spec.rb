@@ -118,4 +118,18 @@ RSpec.describe 'Merchant Coupons Index Page' do
       end
     end
   end
+
+  describe 'Coupon User Story 2' do
+    it 'has a link go to the new coupon page' do
+      expect(page).to have_link('Create New Coupon', href: new_merchant_coupon_path(@merchant1))
+
+      click_on 'Create New Coupon'
+      expect(current_path).to eq new_merchant_coupon_path(@merchant1)
+      expect(page).to have_field('Name')
+      expect(page).to have_field('Unique Code')
+      expect(page).to have_content('Type of Coupon')
+      expect(page).to have_field('Value Off Amount')
+      expect(page).to have_unchecked_field('Active?')
+    end
+  end
 end

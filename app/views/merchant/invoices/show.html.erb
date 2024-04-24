@@ -25,3 +25,10 @@
 <div id="total-revenue">
   <p> <%= "Revenue from all items: $#{@invoice.total_revenue_in_dollars}" %> </p>
 </div>
+
+
+  <h3>Coupon Info:</h3>
+  <ol>
+    <p><li>Subtotal Without Coupons: <%= @straight_up_revenue %></p>
+    <p><li>Merchant Revenue With Coupons: <%= @no_coupon_revenue %></p>
+

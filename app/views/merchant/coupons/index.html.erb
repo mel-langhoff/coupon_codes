@@ -1,5 +1,8 @@
 <h1>Merchant Coupons Index Page</h1>
 
+<p>Navigate to:</p>
+<p><%= link_to 'Create New Coupon', new_merchant_coupon_path(@merchant) %></p>
+
 <div id="active-coupons">
 <h2>Active Coupons</h2>
   <ol>
@@ -16,7 +19,7 @@
 </div>
 
 <div id="inactive-coupons">
-<h2>Inctive Coupons</h2>
+<h2>Inactive Coupons</h2>
   <ol>
     <% @inactive_coupons.each do |coupon| %>
       <li>

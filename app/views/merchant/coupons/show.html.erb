@@ -1,16 +1,16 @@
 <h1>Merchant Coupon Show Page</h1>
 
 <ol>
-  <p><li>Coupon Name: <%= @coupon.name %></li></p>
-  <p><li>Coupon Value Off: <%= @coupon.value_off %> <%= @coupon.value_type %></li></p>
-  <p><li>Coupon Status:
-      <% if @coupon.active %>
-          Active
-          <p><%= button_to 'Deactivate', merchant_coupon_path(@merchant, @coupon), method: :patch %></p>
-      <% else %>
-          Inactive
-          <p><%= button_to 'Activate', merchant_coupon_path(@merchant, @coupon), method: :patch %></p>
-      <% end %>
-  </li></p>
-  <p><li>Usage Count: <%= @usage_count %></li></p>
+    <p><li>Coupon Name: <%= @coupon.name %></li></p>
+    <p><li>Coupon Value Off: <%= @coupon.value_off %> <%= @coupon.value_type %></li></p>
+    <p><li>Coupon Status:
+        <% if @coupon.active %>
+            Active
+            <p><%= button_to 'Deactivate', merchant_coupon_path(@merchant, @coupon), method: :patch %></p>
+        <% else %>
+            Inactive
+            <p><%= button_to 'Activate', merchant_coupon_path(@merchant, @coupon), method: :patch %></p>
+        <% end %>
+    </li></p>
+    <p><li>Usage Count: <%= @usage_count %></li></p>
 </ol>

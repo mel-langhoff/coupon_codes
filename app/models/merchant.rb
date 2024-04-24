@@ -43,4 +43,8 @@ class Merchant < ApplicationRecord
               .order(total_revenue: :desc)
               .limit(5)
   end
+
+  def over_coupon_number_threshold?
+    coupons.where(active: true).count >= 5
+  end
 end
