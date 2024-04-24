@@ -116,7 +116,7 @@ RSpec.describe "Merchant Invoices Show" do
         merchant = Merchant.create(name: 'Test Merchant', status: 1)
         customer = Customer.create(first_name: 'Test', last_name: 'Customer')
         
-        coupon1 = Coupon.create(name: '10% Off', code: '000', merchant: merchant, value_type: 'percentage', value_off: 10, active: true, usage_amount: 0)
+        coupon1 = Coupon.create(name: '10% Off', code: '000', merchant: merchant, value_type: 'percent', value_off: 10, active: true, usage_amount: 0)
         coupon2 = Coupon.create(name: '$5 Off', code: 'sdfsadfsf', merchant: merchant, value_type: 'dollars', value_off: 5, active: true, usage_amount: 0)
         
         invoice1 = Invoice.create(status: 0, customer: customer, coupon: coupon1) # in progress status

@@ -57,7 +57,7 @@ class Invoice < ApplicationRecord
 
     if coupon.present?
         #  if %
-        if coupon.value_type == 'percentage'
+        if coupon.value_type == 'percent'
             discount = total * (coupon.value_off / 100.0)
             total -= discount
         #  if $

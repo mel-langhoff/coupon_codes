@@ -100,7 +100,7 @@ RSpec.describe Invoice, type: :model do
         customer = Customer.create!(first_name: 'John', last_name: 'Doe')
         item1 = Item.create!(name: 'Item 1', description: 'Test item 1', unit_price: 1000, merchant: merchant)
         item2 = Item.create!(name: 'Item 2', description: 'Test item 2', unit_price: 2000, merchant: merchant)
-        coupon = Coupon.create!(name: 'Test Coupon', code: 'TESTCODE', merchant: merchant, value_type: 'percentage', value_off: 20, active: true)
+        coupon = Coupon.create!(name: 'Test Coupon', code: 'TESTCODE', merchant: merchant, value_type: 'percent', value_off: 20, active: true)
         
         invoice = Invoice.create!(status: 'completed', customer: customer, coupon: coupon)
         InvoiceItem.create!(invoice: invoice, item: item1, quantity: 5, unit_price: item1.unit_price, status: 1)
@@ -134,6 +134,20 @@ RSpec.describe Invoice, type: :model do
         expected_subtotal = (2 * 2000 + 3 * 1000) / 100.0
 
         expect(invoice.merchant_subtotal(merchant)).to eq(expected_subtotal)
+      end
+      it 'applies a percent coupon' do
+        customer = Customer.create(first_name: 'Joe', last_name: 'Doe')
+        merchant = Merchant.create(name: 'Merchant 1')
+    
+        item1 = Item.create(name: 'Item 1', description: 'Description 1', unit_price: 2000, merchant: merchant)
+        item2 = Item.create(name: 'Item 2', description: 'Description 2', unit_price: 1000, merchant: merchant)
+    
+        invoice = Invoice.create(status: 'in progress', customer: customer)
+        InvoiceItem.create(invoice: invoice, item: item1, quantity: 2, unit_price: 2000, status: "pending")
+        InvoiceItem.create(invoice: invoice, item: item2, quantity: 3, unit_price: 1000, status: "pending")
+    
+        total = invoice.merchant_rev_with_coupons
+        expect(total).to eq(70.0)
       end
     end
 
