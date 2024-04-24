@@ -110,4 +110,31 @@ RSpec.describe "Merchant Invoices Show" do
       end
     end
   end
+
+  describe 'Coupon User Story 7' do
+      it 'displays the subtotal and Merchant Revenue With Coupons with coupons' do    
+        merchant = Merchant.create(name: 'Test Merchant', status: 1)
+        customer = Customer.create(first_name: 'Test', last_name: 'Customer')
+        
+        coupon1 = Coupon.create(name: '10% Off', code: '000', merchant: merchant, value_type: 'percentage', value_off: 10, active: true, usage_amount: 0)
+        coupon2 = Coupon.create(name: '$5 Off', code: 'sdfsadfsf', merchant: merchant, value_type: 'dollars', value_off: 5, active: true, usage_amount: 0)
+        
+        invoice1 = Invoice.create(status: 0, customer: customer, coupon: coupon1) # in progress status
+        invoice2 = Invoice.create(status: 1, customer: customer, coupon: coupon2) # completed status
+        
+        item1 = Item.create(name: 'Test Item 1', description: 'Description1', unit_price: 200, merchant: merchant, status: 1)
+        invoice_item1 = InvoiceItem.create(invoice: invoice1, item: item1, quantity: 3, unit_price: 200, status: 0)
+        
+        item2 = Item.create(name: 'Test Item 2', description: 'Description2', unit_price: 100, merchant: merchant, status: 1)
+        invoice_item2 = InvoiceItem.create(invoice: invoice2, item: item2, quantity: 2, unit_price: 100, status: 0)
+        
+        subtotal = invoice1.merchant_subtotal(merchant)
+        merch_rev = invoice1.merchant_rev_with_coupons
+
+        visit merchant_invoice_path(merchant, invoice1)
+        
+        expect(page).to have_content("Subtotal Without Coupons: 5.4")
+        expect(page).to have_content("Merchant Revenue With Coupons: 6.0")
+    end
+  end
 end

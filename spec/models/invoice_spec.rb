@@ -94,7 +94,7 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe "instance methods" do
-    describe '#merchant_revenue_grand_total' do
+    describe '#merchant_rev_with_coupons' do
       it 'returns the merchant total revenue' do
         merchant = Merchant.create!(name: 'Test Merchant')
         customer = Customer.create!(first_name: 'John', last_name: 'Doe')
@@ -114,7 +114,7 @@ RSpec.describe Invoice, type: :model do
         expected_grand_total = expected_subtotal - discount
         
         # grand total is calculated correctly
-        grand_total = invoice.merchant_revenue_grand_total
+        grand_total = invoice.merchant_rev_with_coupons
         
         expect(grand_total).to eq(expected_grand_total)      
       end
